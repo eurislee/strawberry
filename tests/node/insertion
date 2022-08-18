@@ -1,0 +1,46 @@
+#! /bin/sh
+
+. ./prelude
+
+strawberryc monitor -a "test-insertion"
+strawberryc desktop -f "test-insertion"
+
+# Automatic mode
+
+window add 2
+
+split_type_a=$(strawberryc query -T -n @/ | jshon -e splitType -u)
+
+window add
+
+split_type_b=$(strawberryc query -T -n @/2 | jshon -e splitType -u)
+
+[ "$split_type_a" = "$split_type_b" ] && fail "Non-vacant node insertion should rotate brother."
+
+split_type_a=$(strawberryc query -T -n @/ | jshon -e splitType -u)
+
+strawberryc rule -a Test:test -o state=floating
+window add
+
+split_type_b=$(strawberryc query -T -n @/2 | jshon -e splitType -u)
+
+[ "$split_type_a" = "$split_type_b" ] || fail "Vacant node insertion shouldn't rotate brother."
+
+window remove
+
+# Manual mode
+
+for dir in north west south east ; do
+	child=1
+	split_type=vertical
+	[ "$dir" = "south" -o "$dir" = "east" ] && child=2
+	[ "$dir" = "north" -o "$dir" = "south" ] && split_type=horizontal
+	strawberryc node -p $dir
+	window add
+	[ "$(strawberryc query -N -n)" = "$(strawberryc query -N -n @parent/${child})" ] || fail "Wrong child polarity for ${dir} preselection."
+	[ "$(strawberryc query -T -n @parent | jshon -e splitType -u)" = "$split_type" ] || fail "Wrong split type for ${dir} preselection."
+done
+
+window remove 7
+
+strawberryc desktop "test-insertion" -r

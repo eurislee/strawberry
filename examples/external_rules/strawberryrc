@@ -1,0 +1,3 @@
+#! /bin/sh
+
+strawberryc config external_rules_command "$(which external_rules)"

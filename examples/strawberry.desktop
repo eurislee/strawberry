@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=strawberry
+Comment=Binary space partitioning window manager
+Exec=strawberry
+Type=Application

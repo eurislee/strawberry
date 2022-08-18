@@ -1,0 +1,19 @@
+#! /bin/sh
+
+. ./prelude
+
+strawberryc monitor -a "test-removal"
+strawberryc desktop -f "test-removal"
+
+window add 3
+
+next_focus=$(strawberryc query -N -n);
+
+strawberryc node -f @/2/1
+strawberryc node @/2 -k
+
+[ "$(strawberryc query -N -n)" = "$next_focus" ] || fail "Invalid focus after removal."
+
+window remove
+
+strawberryc desktop "test-removal" -r

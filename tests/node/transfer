@@ -1,0 +1,25 @@
+#! /bin/sh
+
+. ./prelude
+
+strawberryc monitor -a "test-transfer-a" "test-transfer-b"
+strawberryc desktop -f "test-transfer-a"
+
+window add 5
+
+next_focus_a=$(strawberryc query -N -n @/1)
+next_focus_b=$(strawberryc query -N -n @/2/2/1)
+
+strawberryc node -f $next_focus_b
+strawberryc node @/2 -d "test-transfer-b"
+
+[ "$next_focus_a" = "$(strawberryc query -N -n @test-transfer-a:)" ] || fail "Invalid focus after transfer from source."
+[ "$next_focus_b" = "$(strawberryc query -N -n @test-transfer-b:)" ] || fail "Invalid focus after transfer in destination."
+
+window remove
+strawberryc desktop -f "test-transfer-b"
+window remove 1 2
+window remove 2
+
+strawberryc desktop "test-transfer-a" -r
+strawberryc desktop "test-transfer-b" -r

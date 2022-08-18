@@ -1,0 +1,26 @@
+#! /bin/sh
+
+. ./prelude
+
+strawberryc wm -a "TEST-TRANSFER-A" 1024x512+0+0
+strawberryc wm -a "TEST-TRANSFER-B" 1024x512+0+512
+
+strawberryc monitor "TEST-TRANSFER-A" -a source
+strawberryc monitor -f "TEST-TRANSFER-A"
+
+window add 3
+
+root_rectangle_y=$(strawberryc query -T -n @/ | jshon -e rectangle -e y)
+
+strawberryc desktop "TEST-TRANSFER-A:focused" -m "TEST-TRANSFER-B"
+
+[ "$(strawberryc query -D -m "TEST-TRANSFER-A" | wc -l)" -eq 1 ] || fail "Invalid number of desktop in source after transfer."
+
+strawberryc desktop "TEST-TRANSFER-B:^2" -f
+
+[ "$(strawberryc query -T -n @/ | jshon -e rectangle -e y)" -ne "$root_rectangle_y" ] || fail "Wrong tiled rectangle for root in destination."
+
+window remove 3
+
+strawberryc monitor "TEST-TRANSFER-A" -r
+strawberryc monitor "TEST-TRANSFER-B" -r

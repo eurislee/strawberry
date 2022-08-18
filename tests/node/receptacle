@@ -1,0 +1,22 @@
+#! /bin/sh
+
+. ./prelude
+
+strawberryc monitor -a "test-receptacle"
+strawberryc desktop -f "test-receptacle"
+
+strawberryc node -i
+strawberryc node @/ -p east -i
+strawberryc node @/2 -p north -i
+
+strawberryc rule -a Test:test -o node=@/1
+strawberryc rule -a Test:test -o node=@/2/1
+strawberryc rule -a Test:test -o node=@/2/2
+
+window add 3
+
+strawberryc query -N -n '.leaf.!window.local' > /dev/null && fail "At least one remaining receptacle."
+
+window remove 3
+
+strawberryc desktop "test-receptacle" -r

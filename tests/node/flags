@@ -1,0 +1,28 @@
+#! /bin/sh
+
+. ./prelude
+
+strawberryc monitor -a "test-sticky-a"
+strawberryc monitor -a "test-sticky-b"
+
+strawberryc desktop -f "test-sticky-a"
+
+window add 3
+strawberryc node -g sticky
+
+sticky_node_id=$(strawberryc query -N -n)
+
+strawberryc rule -a Test:test -o desktop="test-sticky-b"
+
+window add
+
+strawberryc desktop -f "test-sticky-b"
+
+strawberryc query -N -d | grep "$sticky_node_id" > /dev/null || fail "Sticky node is missing in destination."
+
+window remove 2
+strawberryc desktop -f "test-sticky-a"
+window remove 2
+
+strawberryc desktop "test-sticky-a" -r
+strawberryc desktop "test-sticky-b" -r

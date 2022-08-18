@@ -1,0 +1,8 @@
+#! /bin/sh
+
+BW=3
+strawberryc config border_width $BW
+strawberryc config window_gap -$BW
+for side in top right bottom left ; do
+	strawberryc config ${side}_padding $BW
+done

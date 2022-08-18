@@ -1,0 +1,27 @@
+#! /bin/sh
+
+. ./prelude
+
+strawberryc wm -a "TEST-SWAP-A" 1024x512+0+0
+strawberryc wm -a "TEST-SWAP-B" 1024x512+0+512
+
+strawberryc monitor -f "TEST-SWAP-A"
+window add 3
+
+strawberryc monitor -f "TEST-SWAP-B"
+window add 2
+
+nodes_a=$(strawberryc query -N -m "TEST-SWAP-A")
+nodes_b=$(strawberryc query -N -m "TEST-SWAP-B")
+
+strawberryc desktop "TEST-SWAP-A:^1" -s "TEST-SWAP-B:^1"
+
+[ "$(strawberryc query -N -m 'TEST-SWAP-A')" = "$nodes_b" ] || fail "Wrong nodes in first monitor"
+[ "$(strawberryc query -N -m 'TEST-SWAP-B')" = "$nodes_a" ] || fail "Wrong nodes in second monitor"
+
+window remove 3
+strawberryc monitor -f "TEST-SWAP-A"
+window remove 2
+
+strawberryc monitor "TEST-SWAP-A" -r
+strawberryc monitor "TEST-SWAP-B" -r
