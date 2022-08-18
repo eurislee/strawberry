@@ -6,7 +6,7 @@ CFLAGS   += -std=c99 -pedantic -Wall -Wextra -DJSMN_STRICT
 LDFLAGS  ?=
 LDLIBS    = $(LDFLAGS) -lm -lxcb -lxcb-util -lxcb-keysyms -lxcb-icccm -lxcb-ewmh -lxcb-randr -lxcb-xinerama -lxcb-shape
 
-PREFIX    ?= /usr/local
+PREFIX    ?= /usr
 BINPREFIX ?= $(PREFIX)/bin
 MANPREFIX ?= $(PREFIX)/share/man
 DOCPREFIX ?= $(PREFIX)/share/doc/strawberry
